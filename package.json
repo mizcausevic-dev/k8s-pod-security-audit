@@ -1,0 +1,65 @@
+{
+  "name": "k8s-pod-security-audit",
+  "version": "0.1.0",
+  "description": "Audit Kubernetes workload manifests (Pod / Deployment / DaemonSet / StatefulSet / Job / CronJob) against the Pod Security Standards. Flags privileged containers, host namespaces, hostPath mounts, dangerous capabilities (SYS_ADMIN etc), runAsRoot, missing seccomp profile, missing resource limits + probes, default ServiceAccount with token automount. Pure offline transform — no cluster access. Library + CLI.",
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "author": "mizcausevic-dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mizcausevic-dev/k8s-pod-security-audit"
+  },
+  "keywords": [
+    "kubernetes",
+    "k8s",
+    "pod-security",
+    "security",
+    "platform-engineering",
+    "manifests",
+    "yaml",
+    "ci",
+    "psp",
+    "typescript"
+  ],
+  "bin": {
+    "k8s-pod-security-audit": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "demo": "tsx src/cli.ts fixtures/workloads --format summary",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "yaml": "^2.6.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.17.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nightly-backup
+  namespace: production
+spec:
+  schedule: "0 1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: backup-runner
+          automountServiceAccountToken: false
+          containers:
+            - name: backup
+              image: ghcr.io/example/backup:1.0
+              securityContext:
+                privileged: true # <- triggers privileged-container
+              resources:
+                limits:   { cpu: "500m", memory: "512Mi" }
+                requests: { cpu: "100m", memory: "128Mi" }
+              livenessProbe:
+                exec: { command: ["echo", "ok"] }
+              readinessProbe:
+                exec: { command: ["echo", "ok"] }

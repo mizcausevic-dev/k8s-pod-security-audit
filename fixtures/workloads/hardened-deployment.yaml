@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-hardened
+  namespace: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels: { app: api-hardened }
+  template:
+    metadata:
+      labels: { app: api-hardened }
+    spec:
+      serviceAccountName: api-runner
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: ghcr.io/example/api:1.2.3
+          securityContext:
+            privileged: false
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 65532
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests: { cpu: "100m", memory: "128Mi" }
+            limits:   { cpu: "500m", memory: "512Mi" }
+          livenessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+          readinessProbe:
+            httpGet: { path: /readyz, port: 8080 }
